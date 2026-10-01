@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <title>Rafa Birthday 💖</title>
+
+    <style>
+        /* ── INTRO OVERLAY ── */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #013f38;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transition: opacity 0.7s ease;
+        }
+
+        #intro-overlay.hiding {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Partículas */
+        #particles {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: #55a783;
+            opacity: 0;
+            animation: float-up linear infinite;
+        }
+        @keyframes float-up {
+            0%   { opacity: 0;    transform: translateY(0) scale(0.5); }
+            10%  { opacity: 0.15; }
+            90%  { opacity: 0.08; }
+            100% { opacity: 0;    transform: translateY(-100vh) scale(1.2); }
+        }
+
+        /* Título da intro */
+        .intro-title {
+            text-align: center;
+            animation: fade-down 1.2s ease both;
+            position: relative;
+            z-index: 1001;
+        }
+        .intro-title p {
+            color: #55a783;
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 0.4rem;
+            font-family: "Roboto Slab", serif;
+        }
+        .intro-title h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            color: #fdf8f2;
+            font-weight: 400;
+            line-height: 1.25;
+        }
+        .intro-title h1 em {
+            font-style: italic;
+            color: #c9a84c;
+        }
+
+        @keyframes fade-down {
+            from { opacity: 0; transform: translateY(-14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── ENVELOPE ── */
+        .envelope-wrap {
+            position: relative;
+            z-index: 1001;
+            cursor: pointer;
+            animation: fade-up 1.2s ease 0.3s both;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .envelope-wrap:hover .envelope {
+            transform: scale(1.03) translateY(-4px);
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .envelope {
+            width: 300px;
+            height: 210px;
+            position: relative;
+            filter: drop-shadow(0 18px 36px rgba(0,0,0,0.55));
+            transition: transform 0.3s ease;
+        }
+
+        .env-body {
+            position: absolute;
+            inset: 0;
+            background: #fdf8f2;
+            border-radius: 4px 4px 8px 8px;
+            overflow: hidden;
+        }
+        .env-bottom {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 0; height: 0;
+            border-left:  150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 105px solid #e8dfd2;
+        }
+        .env-left {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-top:    105px solid transparent;
+            border-bottom: 105px solid transparent;
+            border-left:   120px solid #ddd4c5;
+        }
+        .env-right {
+            position: absolute;
+            top: 0; right: 0;
+            width: 0; height: 0;
+            border-top:    105px solid transparent;
+            border-bottom: 105px solid transparent;
+            border-right:  120px solid #d4cabb;
+        }
+
+        /* Tampa */
+        .env-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-left:  150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top:   108px solid #55a783;
+            transform-origin: top center;
+            transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 4;
+        }
+
+        /* Lacre */
+        .env-seal {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 42px; height: 42px;
+            background: #013f38;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            z-index: 5;
+            border: 2px solid #c9a84c;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Carta espiando */
+        .letter-peek {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 256px;
+            background: white;
+            border-radius: 3px;
+            padding: 9px 13px;
+            z-index: 3;
+            opacity: 0;
+            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.35s,
+                        opacity  0.5s ease 0.35s;
+            box-shadow: 0 -4px 14px rgba(0,0,0,0.15);
+        }
+        .letter-peek p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 0.72rem;
+            color: #0f6e56;
+            line-height: 1.5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .letter-line {
+            height: 1px;
+            background: #e0d8cc;
+            margin: 4px 0;
+        }
+
+        /* Estado aberto */
+        .envelope-wrap.open .env-flap {
+            transform: rotateX(180deg);
+        }
+        .envelope-wrap.open .env-seal {
+            opacity: 0;
+        }
+        .envelope-wrap.open .letter-peek {
+            transform: translateX(-50%) translateY(-115px);
+            opacity: 1;
+        }
+
+        /* Hint */
+        .click-hint {
+            position: relative;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            animation: fade-up 1.2s ease 0.7s both;
+            transition: opacity 0.4s ease;
+        }
+        .click-hint span {
+            font-size: 0.75rem;
+            color: #55a783;
+            letter-spacing: 0.18em;
+            opacity: 0.6;
+            text-transform: uppercase;
+            font-family: "Roboto Slab", serif;
+        }
+        .arrow-down {
+            width: 18px; height: 18px;
+            border-right: 2px solid #55a783;
+            border-bottom: 2px solid #55a783;
+            transform: rotate(45deg);
+            opacity: 0.4;
+            animation: bounce 1.6s ease infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: rotate(45deg) translateY(0); }
+            50%       { transform: rotate(45deg) translateY(5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══════════════════════════════════
+         INTRO — some ao clicar no envelope
+    ══════════════════════════════════ -->
+    <div id="particles"></div>
+
+    <div id="intro-overlay">
+
+        <div class="intro-title">
+            <p>uma surpresa para você</p>
+            <h1>Feliz Aniversário,<br><em>Rafa</em> 💖</h1>
+        </div>
+
+        <div class="envelope-wrap" id="envelope" onclick="openEnvelope()" role="button" aria-label="Abrir carta">
+            <div class="envelope">
+                <div class="env-body">
+                    <div class="env-bottom"></div>
+                    <div class="env-left"></div>
+                    <div class="env-right"></div>
+                </div>
+                <div class="letter-peek">
+                    <p>Bem-vinda ao seu site de aniversário! 🌹</p>
+                    <div class="letter-line"></div>
+                    <p>Uma carta aberta, feita com amor...</p>
+                </div>
+                <div class="env-flap"></div>
+                <div class="env-seal">💌</div>
+            </div>
+        </div>
+
+        <div class="click-hint" id="hint">
+            <span>clique para abrir</span>
+            <div class="arrow-down"></div>
+        </div>
+
+    </div><!-- /intro-overlay -->
+
+
+    <!-- ══════════════════════════════════
+         CONTEÚDO ORIGINAL DA CARTA
+    ══════════════════════════════════ -->
+    <main class="letter-container">
+        <header class="letter-header">
+            <h1>Feliz Aniversário, Rafa! 🎂✨</h1>
+            <p class="intro-p">
+                Bem-vinda ao seu site de aniversário! Aqui você encontrará uma carta aberta para celebrar o dia em que a mulher que AMO nasceu. Espero que você goste do presente e que tenha um dia maravilhoso, cheio de amor, alegria e felicidade. Que todos os seus sonhos se realizem, que você continue sendo essa pessoa incrível, que Deus possa abençoar você e sua família. Parabéns pelo seu dia! Eu te amo eternamente.
+            </p>
+        </header>
+
+        <article class="letter-body">
+            <h2>Enfim, sem mais clichês meu amor.</h2>
+            <p>
+                Primeiro quero dizer que TE AMO muito. Por mais que você não curta tanto o seu dia, eu espero de coração que você mude de ideia e aproveite, porque hoje é o dia em que você nasceu! O dia em que Deus trouxe alegria para a sua família e claro para mim. O dia em que a mulher que amarei eternamente nasceu não é um dia qualquer. Desde que vi você sentadinha no PC, eu sabia que toda aquela fachada de homem durão e sombrio sumiria, porque um simples olhar me fez enxergar o amor que tinha morrido, ou que eu tinha tentado matar. Deus me apresentou a felicidade de te amar, a felicidade de ser amado pela mulher mais incrível, linda, fofa, gentil, carinhosa, inteligente, esforçada e carismática. São infinitos adjetivos para quem carrega o peso de um mundo caótico nas costas.
+            </p>
+
+            <h2>Eu te amo, Rafa. Feliz aniversário!</h2>
+            <p>
+                Do meu deitar ao acordar, a primeira pessoa que vem à minha mente é você. Quando te vejo, meu sorriso sai automático e meus olhos brilham tanto que até a escuridão do universo se acende, fazendo o apelido carinhoso de Vênus se tornar pequeno. Se Deus precisou de 6 dias para criar o mundo, como um mortal igual a mim conseguiria descrever o meu mundo (que é você) em palavras? Não tem como. Afinal, para mim você é o mundo! Você é a felicidade de um "boa noite", "bom dia", "vai com Deus", "se cuida", "me avisa quando chegar", "eu te amo". É a lembrança em uma música que toca, a vontade de te dar uma flor que vejo na rua, o mini bode que ainda vou te dar, a estante de livros que vou te montar, a estufa que vou te dar... Entende como é difícil descrever o meu mundo?
+            </p>
+
+            <h2>O dia a dia caótico que me traz conforto ao seu lado.</h2>
+            <p>
+                Eu sei como sua vida pesa, como tudo parece estar contra você e como é difícil. Pessoas falam, fazem e te magoam. Eu vejo tudo isso e sei como dói, mas eu sempre te digo: me mostre onde dói que te amarei tanto a ponto de você esquecer da dor. Me dê o seu mundo, que eu vou carregá-lo pelo tempo que for necessário. Sentar ao seu lado, te ouvir e te abraçar me traz o mesmo conforto que sinto ao ter o seu amor. Se para toda ação existe uma reação, eu quero ser a sua calmaria, o seu porto seguro, o seu "Hoje foi difícil, mas o Kewyn tá me esperando, vai ficar tudo bem". Se o amor é a tecla que Deus sempre clica, eu te digo: o nosso amor supera tudo. Se até mesmo o espaço é superado pelo amor, o que seria do dia a dia caótico contra nós?
+            </p>
+
+            <h2>O que seria do Luan sem o seu Santana?? 😂</h2>
+            <p>
+                Títulos engraçados kkkk. O que seria do Kewyn sem a Rafa?? O que seria do meu sofá sem os seus presentes?? Parando com as gracinhas, eu quero do fundo do meu coração que você curta o dia de hoje. Que no dia do nosso casamento, na nossa primeira noite em casa, na nossa primeira refeição e na nossa primeira viagem, você possa olhar para o lado e ver que tudo o que prometi era verdade. Que quando você estiver no seu primeiro júri, no seu primeiro dia como Juíza, possa ver que tudo deu certo, olhar para a sua aliança e para o seu anel de formatura e se sentir realizada e feliz por não estar sozinha.
+            </p>
+
+            <h2>Talvez "Somos Apenas Um" seja a nossa música!!</h2>
+            <p>
+                Se me dissessem no passado, enquanto eu ouvia "Meteora da Paixão" escondido, que aos 26 anos eu teria uma playlist do Luan Santana, eu nunca acreditaria! Mas quando você ama, você aprende a gostar e entende tudo o que o seu amor gosta. Você se esforça para ser melhor, e a gente melhora dia após dia. Isso fala muito sobre nós, porque no fim do dia somos apenas um, procurando melhorar, amar, cuidar e ser presente nos pequenos detalhes, gestos, palavras e olhares. E isso é o amor.
+            </p>
+
+            <h2>O medo de não estar bom... o fim??</h2>
+            <p>
+                Nunca fui super perfeccionista, mas sempre gostei de dar o meu melhor em tudo o que me disponho a fazer. Não importa quantos dias eu passe fazendo esse site ou quanto tempo eu leve para escrever, no fim sempre vou achar pouco. Não por orgulho ou vaidade, mas porque você merece o melhor que eu posso oferecer. Por mais que eu esteja em uma busca constante para melhorar, ainda temo não ser o suficiente. Mas não quero pesar o clima hoje! Quero apenas te dizer tudo o que você representa para mim.
+            </p>
+
+            <h2>Não era o fimmmmmmmm!</h2>
+            <p>
+                Rafa, Vênus, GJ504b (o planeta rosa), vida, amor... são muitos os nomes que representam você, mas o que eu mais gosto é Vênus. Ele é único. Representa não apenas a sua beleza, mas o fato de você estar orbitando o Sol que sou eu, me lembrando de ser melhor a cada dia. Sempre gostei de romances e imaginava como seria amar, mas não tinha ideia de que era tão bom assim. Deus realmente sabe o que faz. Mesmo sendo difícil hoje, sinto que o Sol iluminará Vênus de uma forma nunca vista e o nosso amor será eterno. O mundo será movido, o universo será mudado, tudo será feito para que o nosso amor dure para sempre! Você representa o lado meu que eu tentava sufocar, e hoje vejo a burrice que era tentar matar o meu lado mais belo. Obrigado por me fazer viver o amor e a felicidade de ter você na minha vida. Te amo!
+            </p>
+
+            <h2>Tá, e agora... é o fim??</h2>
+            <p>
+                Sim! Mas não sem antes dizer que você é a mulher mais incrível deste mundo. Admiro demais a forma como você vive, como organiza a sua vida, o jeito perfeito com que faz as coisas, a sua caridade, gentileza e feminilidade. Tudo isso e mais infinitos adjetivos me fazem o homem mais sortudo e feliz do mundo. Se "Noites Brancas" me mostrou que a solidão dói, e "Fleabag" mostrou que o perdão próprio ajuda a superar o luto e a solidão, você me mostra que o amor é lindo de ser vivido. Acordar e ter o seu "bom dia" traz paz para o meu dia inteiro. Você me mostra que uma mulher forte não precisa de ninguém, mas mesmo assim escolheu me amar. Ver uma linhagem de mulheres fortes me fez admirar e amar a mulher que você se tornou. Tenho um orgulho tão grande de ti, uma admiração e um amor que me fazem perguntar "como?", mas não existe o "como", apenas o "por que demorou tanto?!". Mas tudo acontece no tempo certo. Vida, te amo! Aproveite o seu dia, espero que esta carta possa te tocar e deixar o seu dia melhor. O que seria do Kewyn sem a Rafa? O mundo continuaria escuro, o Sol não teria o brilho que tem hoje e o universo continuaria monótono e sem graça... Bastou apenas um "bom dia" seu para que tudo mudasse. Parabéns, meu amor. Te amo!
+            </p>
+
+            <a href="miniRafa.jpeg" target="_blank">
+                <img src="miniRafa.jpeg" alt="Meu amor em miniatura">
+            </a>
+        </article>
+    </main>
+
+
+    <script>
+        // Partículas flutuantes
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 22; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 5 + 2;
+            p.style.cssText = `
+                width: ${size}px;
+                height: ${size}px;
+                left: ${Math.random() * 100}%;
+                bottom: -10px;
+                animation-duration: ${Math.random() * 12 + 10}s;
+                animation-delay: ${Math.random() * 10}s;
+            `;
+            container.appendChild(p);
+        }
+
+        let opened = false;
+
+        function openEnvelope() {
+            if (opened) return;
+            opened = true;
+
+            // Abre o envelope
+            document.getElementById('envelope').classList.add('open');
+            document.getElementById('hint').style.opacity = '0';
+
+            // Após a carta aparecer, some o overlay e revela a página
+            setTimeout(() => {
+                const overlay = document.getElementById('intro-overlay');
+                overlay.classList.add('hiding');
+
+                // Remove do fluxo depois do fade
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    container.style.display = 'none';
+                }, 750);
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>
